@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+
+            <!DOCTYPE html>
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>உண்மையான விண்வெளி தரவு டாஷ்போர்டு</title>
+    <title>விண்வெளி நேரடி தரவு டாஷ்போர்டு</title>
+    <!-- Leaflet CSS வரைபடத்திற்கான லிங்க் -->
+    <link rel="stylesheet" href="https://unpkg.com" />
     <style>
         body {
             background-color: #0b0f19;
@@ -24,9 +27,11 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
         .iss-card { border: 2px solid #06b6d4; }
+        .map-card { border: 2px solid #10b981; }
         .mars-card { border: 2px solid #ef4444; }
         h2 { margin-top: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
         .iss-card h2 { color: #06b6d4; }
+        .map-card h2 { color: #10b981; }
         .mars-card h2 { color: #ef4444; }
         .grid {
             display: grid;
@@ -51,7 +56,7 @@
             background: transparent;
             border: 1px solid #06b6d4;
             color: #06b6d4;
-            padding: 8px 15px;
+            padding: 10px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
@@ -59,12 +64,20 @@
             width: 100%;
         }
         .btn:hover { background: #06b6d4; color: #000; }
+        #map {
+            width: 100%;
+            height: 250px;
+            border-radius: 8px;
+            margin-top: 10px;
+            background: #1f2937;
+        }
         .mars-img {
             width: 100%;
             border-radius: 8px;
             margin-top: 10px;
             display: block;
-            min-height: 200px;
+            min-height: 250px;
+            object-fit: cover;
             background: #1f2937;
         }
         .footer { text-align: center; color: #4b5563; font-size: 0.8rem; margin-top: 30px; }
@@ -74,10 +87,9 @@
 
 <div class="dashboard">
 
-    <!-- ISS Live Card -->
+    <!-- ISS Live Data Card -->
     <div class="card iss-card">
-        <h2>🛰️ ISS Tracker (நேரடித் தரவு)</h2>
-        
+        <h2>🛰️ ISS TRACKER (நேரடித் தரவு)</h2>
         <div class="grid">
             <div class="data-box">
                 <div class="label">உயரம் (Altitude)</div>
@@ -96,18 +108,24 @@
                 <div class="data-field" id="iss-lng">ஏற்றப்படுகிறது...</div>
             </div>
         </div>
-        
         <p class="status-text">🟢 ISS தற்போது விண்வெளியில் இயங்கிக் கொண்டிருக்கிறது</p>
         <p class="label" style="font-size:0.75rem;">கடைசி புதுப்பிப்பு: <span id="time">-</span></p>
         <button class="btn" onclick="fetchLiveISS()">ISS தரவை புதுப்பி</button>
     </div>
 
-    <!-- Mars Rover Live Card -->
+    <!-- Live Map Card -->
+    <div class="card map-card">
+        <h2>🗺️ ISS இருக்கும் நேரடி வரைபடம்</h2>
+        <div id="map"></div>
+    </div>
+
+    <!-- Mars Rover Card (Fixed Image) -->
     <div class="card mars-card">
         <h2>🔴 MARS ROVER (உண்மையான படம்)</h2>
-        <img class="mars-img" id="mars-photo" src="" alt="Mars Surface Image">
+        <!-- படம் எப்போதும் தெரியுமாறு நாசாவின் அதிகாரப்பூர்வ நேரடி புகைப்படம் மாற்றியமைக்கப்பட்டுள்ளது -->
+        <img class="mars-img" id="mars-photo" src="https://nasa.gov" alt="Mars Surface Image">
         <p class="status-text" style="color:#ef4444; font-size: 0.85rem; text-align: center; margin-top: 10px;">
-            📍 NASA Curiosity Rover • செவ்வாய் கிரகத்தின் மேற்பரப்பு (Sol <span id="mars-sol">-</span>)
+            📍 NASA Curiosity Rover • செவ்வாய் கிரகத்தின் மேற்பரப்பு
         </p>
     </div>
 
@@ -118,19 +136,41 @@
 
 </div>
 
+<!-- Leaflet JS வரைபடத்திற்கான ஸ்கிரிப்ட் -->
+<script src="https://unpkg.com"></script>
 <script>
-    // 1. நேரடி ISS தரவை பெறும் செயல்பாடு
+    // வரைபடத்தை உருவாக்குதல்
+    let map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}://{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO'
+    }).addTo(map);
+
+    // வரைபடத்தில் ISS-ஐக் காட்ட ஒரு சின்னம் (Marker)
+    let issIcon = L.icon({
+        iconUrl: 'https://wikimedia.org',
+        iconSize:,
+        iconAnchor: [20, 20]
+    });
+    let marker = L.marker([0, 0], {icon: issIcon}).addTo(map);
+
+    // நேரடி ISS தரவை பெறும் செயல்பாடு
     async function fetchLiveISS() {
         try {
-            const response = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+            const response = await fetch('https://wheretheiss.at');
             const data = await response.json();
             
-            // உண்மையான மதிப்புகளை இணையத்தில் இருந்து எடுத்து மாற்றுதல்
+            const lat = parseFloat(data.latitude);
+            const lng = parseFloat(data.longitude);
+
             document.getElementById('iss-alt').innerText = parseFloat(data.altitude).toFixed(1) + " km";
             document.getElementById('iss-speed').innerText = Math.floor(data.velocity).toLocaleString() + " km/h";
-            document.getElementById('iss-lat').innerText = parseFloat(data.latitude).toFixed(4) + " °";
-            document.getElementById('iss-lng').innerText = parseFloat(data.longitude).toFixed(4) + " °";
+            document.getElementById('iss-lat').innerText = lat.toFixed(4) + " °";
+            document.getElementById('iss-lng').innerText = lng.toFixed(4) + " °";
             
+            // வரைபடத்தில் ISS இடத்தை புதுப்பித்தல்
+            marker.setLatLng([lat, lng]);
+            map.setView([lat, lng], map.getZoom());
+
             const now = new Date();
             document.getElementById('time').innerText = now.toLocaleTimeString();
         } catch (error) {
@@ -138,46 +178,12 @@
         }
     }
 
-    // 2. நாசாவின் Mars Rover API மூலம் உண்மையான சமீபத்திய புகைப்படத்தை எடுக்கும் செயல்பாடு
-    async function fetchMarsPhoto() {
-        try {
-            // NASA-வின் பொதுப்படையான DEMO_KEY பயன்படுத்தப்பட்டுள்ளது
-            const url = 'https://nasa.gov';
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.latest_photos && data.latest_photos.length > 0) {
-                const latestPhoto = data.latest_photos[0];
-                document.getElementById('mars-photo').src = latestPhoto.img_src;
-                document.getElementById('mars-sol').innerText = latestPhoto.sol;
-            }
-        } catch (error) {
-            console.error("Mars API பிழை:", error);
-            // ஒருவேளை API வேலை செய்யாவிடில் இயல்புநிலை படம்
-            document.getElementById('mars-photo').src = "https://nasa.gov";
-            document.getElementById('mars-sol').innerText = "Latest";
-        }
-    }
-
-    // பக்கம் திறக்கும் போது இரண்டு தரவுகளையும் நேரடியாக அழைக்கவும்
+    // பக்கம் திறக்கும் போது தரவை இயக்கவும்
     fetchLiveISS();
-    fetchMarsPhoto();
 
-    // ஒவ்வொரு 5 வினாடிக்கும் தானாகவே ISS இருப்பிடத்தை புதுப்பிக்க
+    // ஒவ்வொரு 5 வினாடிக்கும் வரைபடமும் தரவும் தானாகவே புதுப்பிக்கப்படும்
     setInterval(fetchLiveISS, 5000);
 </script>
 
 </body>
 </html>
-
-
-
-    
-
-    
-        
-
-        
-
-            
-        

@@ -1,263 +1,788 @@
+
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NASA Space Data Center</title>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>NASA Space Data Dashboard</title>
 
 <style>
+
+/* =========================
+   GLOBAL
+========================= */
 
 * {
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    padding: 15px;
-    background: #020208;
+    padding: 0;
+    background: #02040b;
     color: white;
     font-family: monospace;
-    text-align: center;
+    overflow-x: hidden;
 }
+
+
+/* =========================
+   STAR BACKGROUND
+========================= */
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background-image:
+        radial-gradient(1px 1px at 10% 20%, white, transparent),
+        radial-gradient(1px 1px at 30% 80%, white, transparent),
+        radial-gradient(1px 1px at 60% 30%, white, transparent),
+        radial-gradient(1px 1px at 80% 70%, white, transparent),
+        radial-gradient(1px 1px at 90% 10%, white, transparent),
+        radial-gradient(1px 1px at 45% 55%, white, transparent),
+        radial-gradient(1px 1px at 15% 90%, white, transparent);
+    background-size: 250px 250px;
+    animation: starsMove 20s linear infinite;
+}
+
+@keyframes starsMove {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-250px);
+    }
+}
+
+
+/* =========================
+   MAIN
+========================= */
 
 .container {
     width: 100%;
-    max-width: 900px;
+    max-width: 1100px;
     margin: auto;
+    padding: 20px;
 }
 
-.card {
-    background: rgba(8,18,38,0.95);
-    border-radius: 14px;
-    padding: 20px;
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    text-align: center;
+    padding: 25px 15px;
+    margin-bottom: 20px;
+
+    border: 1px solid #1b7cff;
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(10,25,60,.95),
+            rgba(2,5,15,.95)
+        );
+
+    box-shadow:
+        0 0 25px rgba(0,120,255,.25);
+}
+
+.logo {
+    font-size: 45px;
+}
+
+.header h1 {
+    margin: 8px 0;
+    font-size: 30px;
+    letter-spacing: 3px;
+}
+
+.subtitle {
+    color: #8da3bd;
+    font-size: 13px;
+}
+
+.clock {
+    margin-top: 15px;
+    color: #00d2ff;
+    font-size: 17px;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.system-status {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 
-.nasa {
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 15px rgba(0,255,0,.25);
+.status-pill {
+    padding: 8px 14px;
+    border-radius: 30px;
+    background: #071326;
+    border: 1px solid #17345d;
+    color: #9bb4d0;
+    font-size: 12px;
 }
 
-.iss {
-    border: 2px solid #00d2ff;
-    box-shadow: 0 0 15px rgba(0,210,255,.25);
+.green {
+    color: #00ff66;
 }
 
-.mars {
-    border: 2px solid #ff3333;
-    box-shadow: 0 0 15px rgba(255,50,50,.25);
+.red {
+    color: #ff5555;
 }
 
-h2 {
-    letter-spacing: 1px;
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    position: relative;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(8,18,38,.97),
+            rgba(3,8,20,.97)
+        );
+
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 20px;
+
+    overflow: hidden;
 }
 
-.number {
-    font-size: 38px;
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    opacity: .7;
+}
+
+.nasa-card {
+    color: #00ff55;
+    border: 1px solid #00ff55;
+    box-shadow: 0 0 25px rgba(0,255,80,.12);
+}
+
+.iss-card {
+    color: #00d2ff;
+    border: 1px solid #00d2ff;
+    box-shadow: 0 0 25px rgba(0,210,255,.12);
+}
+
+.mars-card {
+    color: #ff5555;
+    border: 1px solid #ff3333;
+    box-shadow: 0 0 25px rgba(255,50,50,.12);
+}
+
+
+/* =========================
+   CARD HEADER
+========================= */
+
+.card-title {
+    text-align: center;
+    font-size: 21px;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.live-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: red;
+    border-radius: 50%;
+    margin-right: 8px;
+
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: .25;
+        transform: scale(.7);
+    }
+}
+
+
+/* =========================
+   ASTEROID
+========================= */
+
+.asteroid-main {
+    text-align: center;
+}
+
+.asteroid-number {
+    font-size: 65px;
     font-weight: bold;
-    color: #00ff00;
-    margin: 15px;
+    color: #00ff55;
+
+    text-shadow:
+        0 0 15px #00ff55;
 }
 
-.telemetry {
-    display: flex;
+.data-label {
+    color: #8396ac;
+    font-size: 13px;
+}
+
+.data-status {
+    margin-top: 10px;
+    color: #8798ab;
+}
+
+
+/* =========================
+   GRID
+========================= */
+
+.grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+
     gap: 15px;
 }
 
 .data-box {
-    flex: 1;
-    background: rgba(0,20,40,.8);
+    background: rgba(0,20,42,.75);
+    border-radius: 12px;
     padding: 18px;
-    border-radius: 10px;
+    text-align: center;
+    border: 1px solid rgba(80,150,220,.12);
 }
 
-.label {
-    color: #9aa9bb;
-    font-size: 14px;
-}
-
-.value {
+.data-value {
     color: #00d2ff;
-    font-size: 22px;
+    font-size: 25px;
     font-weight: bold;
     margin-top: 10px;
 }
 
-#issStatus {
-    color: #00ff00;
-    margin-top: 18px;
+
+/* =========================
+   ISS EXTRA DATA
+========================= */
+
+.iss-extra {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+    margin-top: 15px;
 }
 
-#marsImage {
-    width: 100%;
-    min-height: 220px;
-    background: #05070d;
+.extra-box {
+    text-align: center;
+    background: #061020;
+    padding: 15px;
     border-radius: 10px;
+}
+
+.extra-value {
+    color: #b7eaff;
+    font-size: 18px;
+    margin-top: 7px;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+button {
+    margin-top: 18px;
+
+    background: transparent;
+    color: #00d2ff;
+
+    border: 1px solid #00d2ff;
+    border-radius: 8px;
+
+    padding: 10px 18px;
+
+    font-family: monospace;
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+button:hover {
+    background: #00d2ff;
+    color: #02040b;
+}
+
+
+/* =========================
+   ASTEROID DETAILS
+========================= */
+
+.asteroid-details {
+    margin-top: 18px;
+    padding: 18px;
+
+    background: #050d1b;
+    border-radius: 12px;
+
+    text-align: left;
+}
+
+.asteroid-details h3 {
+    color: #00ff55;
+    margin-top: 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 8px 0;
+    border-bottom: 1px solid #132238;
+}
+
+.detail-row span:last-child {
+    color: #b5c7db;
+}
+
+
+/* =========================
+   MARS IMAGE
+========================= */
+
+.mars-image-container {
+    background: #03050a;
+    border-radius: 14px;
     overflow: hidden;
+
+    border: 1px solid #32151a;
 }
 
-#marsImage img {
+.mars-image {
     width: 100%;
-    height: auto;
     display: block;
+
+    max-height: 550px;
     object-fit: cover;
+
+    transition: transform .5s;
 }
 
-#marsCaption {
-    color: #ff8888;
-    margin-top: 12px;
+.mars-image:hover {
+    transform: scale(1.02);
 }
 
-.status {
-    color: #999;
-    font-size: 13px;
-    margin-top: 10px;
+.mars-info {
+    text-align: center;
+    color: #ff9999;
+    padding: 12px;
 }
 
-.live {
-    color: red;
-    animation: blink 1s infinite;
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    text-align: center;
+    padding: 25px 10px;
+
+    color: #62748b;
+    font-size: 12px;
 }
 
-@keyframes blink {
-    50% {
-        opacity: .25;
-    }
+.footer strong {
+    color: #9db4cc;
 }
 
-@media(max-width:600px) {
 
-    body {
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width: 650px) {
+
+    .container {
         padding: 10px;
     }
 
+    .header h1 {
+        font-size: 21px;
+        letter-spacing: 1px;
+    }
+
+    .logo {
+        font-size: 35px;
+    }
+
+    .grid,
+    .iss-extra {
+        grid-template-columns: 1fr;
+    }
+
+    .asteroid-number {
+        font-size: 52px;
+    }
+
     .card {
-        padding: 15px;
+        padding: 16px;
     }
 
-    .telemetry {
-        flex-direction: column;
+    .card-title {
+        font-size: 17px;
     }
 
-    .value {
-        font-size: 20px;
-    }
-
-    h2 {
-        font-size: 18px;
-    }
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <div class="container">
 
 
-<!-- NASA ASTEROIDS -->
+<!-- =========================
+     HEADER
+========================= -->
 
-<div class="card nasa">
+<div class="header">
 
-<h2>NASA SPACE DATA CENTER</h2>
+    <div class="logo">🌌</div>
 
-<p>
-இன்று பூமிக்கு அருகில் வரும் விண்கற்கள்
-</p>
+    <h1>
+        NASA SPACE DATA DASHBOARD
+    </h1>
 
-<div class="number" id="asteroidCount">
-Loading...
-</div>
+    <div class="subtitle">
+        REAL-TIME SPACE INFORMATION • EDUCATIONAL PROJECT
+    </div>
 
-<div class="status" id="asteroidStatus">
-NASA தரவு பெறப்படுகிறது...
-</div>
-
-</div>
-
-
-<!-- ISS -->
-
-<div class="card iss">
-
-<h2>
-<span class="live">●</span>
-LIVE ISS TELEMETRY
-</h2>
-
-<div class="telemetry">
-
-<div class="data-box">
-
-<div class="label">
-LATITUDE / அட்சரேகை
-</div>
-
-<div class="value" id="lat">
-Loading...
-</div>
+    <div class="clock" id="clock">
+        --:--:--
+    </div>
 
 </div>
 
 
-<div class="data-box">
+<!-- =========================
+     SYSTEM STATUS
+========================= -->
 
-<div class="label">
-LONGITUDE / தீர்க்கரேகை
-</div>
+<div class="system-status">
 
-<div class="value" id="lng">
-Loading...
-</div>
+    <div class="status-pill">
+        🛰️ ISS:
+        <span class="green"
+              id="issConnection">
+            CONNECTING
+        </span>
+    </div>
 
-</div>
+    <div class="status-pill">
+        ☄️ NASA NEO:
+        <span class="green"
+              id="neoConnection">
+            CONNECTING
+        </span>
+    </div>
 
-</div>
-
-<div id="issStatus">
-ISS நிலை பெறப்படுகிறது...
-</div>
-
-<div class="status">
-கடைசி புதுப்பிப்பு:
-<span id="issTime">--:--:--</span>
-</div>
-
-</div>
-
-
-<!-- MARS -->
-
-<div class="card mars">
-
-<h2>
-🔴 MARS ROVER
-</h2>
-
-<div id="marsImage">
-
-<img
-src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/msl/2026/august-images/PIA26691-Curiosity%20Views%20Gale%20Craters%20Floor%20From%20Valle%20Grande-Figure%20A.png?crop=faces%2Cfocalpoint&fit=clip&h=2394&w=4976"
-alt="NASA Curiosity Mars Rover Image"
-onerror="marsImageError()"
->
+    <div class="status-pill">
+        🔴 MARS:
+        <span class="green"
+              id="marsConnection">
+            READY
+        </span>
+    </div>
 
 </div>
 
-<div id="marsCaption">
 
-NASA Curiosity Rover • Valle Grande • August 2026
+<!-- =========================
+     ASTEROID CARD
+========================= -->
+
+<div class="card nasa-card">
+
+    <div class="card-title">
+        ☄️ NEAR-EARTH OBJECTS
+    </div>
+
+    <div class="asteroid-main">
+
+        <div class="data-label">
+            இன்று பூமிக்கு அருகில் வரும் விண்கற்கள்
+        </div>
+
+        <div
+            class="asteroid-number"
+            id="asteroidCount">
+            ...
+        </div>
+
+        <div
+            class="data-status"
+            id="asteroidStatus">
+            NASA தரவு பெறப்படுகிறது...
+        </div>
+
+    </div>
+
+
+    <div
+        class="asteroid-details"
+        id="closestAsteroid">
+
+        <h3>
+            🔭 அருகில் வரும் விண்கல்
+        </h3>
+
+        <div class="detail-row">
+            <span>பெயர்</span>
+            <span id="asteroidName">--</span>
+        </div>
+
+        <div class="detail-row">
+            <span>அணுகும் தூரம்</span>
+            <span id="asteroidDistance">--</span>
+        </div>
+
+        <div class="detail-row">
+            <span>அளவு</span>
+            <span id="asteroidSize">--</span>
+        </div>
+
+    </div>
+
+
+    <button onclick="getAsteroids()">
+        🔄 ASTEROID DATA REFRESH
+    </button>
 
 </div>
 
-<div class="status">
 
-NASA/JPL-Caltech/MSSS
+<!-- =========================
+     ISS CARD
+========================= -->
+
+<div class="card iss-card">
+
+    <div class="card-title">
+
+        <span class="live-dot"></span>
+
+        LIVE ISS TELEMETRY
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="data-box">
+
+            <div class="data-label">
+                LATITUDE / அட்சரேகை
+            </div>
+
+            <div
+                class="data-value"
+                id="lat">
+                Loading...
+            </div>
+
+        </div>
+
+
+        <div class="data-box">
+
+            <div class="data-label">
+                LONGITUDE / தீர்க்கரேகை
+            </div>
+
+            <div
+                class="data-value"
+                id="lng">
+                Loading...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="iss-extra">
+
+        <div class="extra-box">
+
+            <div class="data-label">
+                ALTITUDE
+            </div>
+
+            <div
+                class="extra-value"
+                id="altitude">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="extra-box">
+
+            <div class="data-label">
+                SPEED
+            </div>
+
+            <div
+                class="extra-value"
+                id="speed">
+                --
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="issStatus"
+        style="
+            text-align:center;
+            margin-top:18px;
+            color:#00ff66;
+        ">
+        ISS நிலை பெறப்படுகிறது...
+    </div>
+
+
+    <div
+        style="
+            text-align:center;
+            color:#71859c;
+            font-size:12px;
+            margin-top:8px;
+        ">
+
+        கடைசி புதுப்பிப்பு:
+        <span id="issTime">
+            --
+        </span>
+
+    </div>
+
+
+    <button onclick="getISS()">
+        🔄 ISS REFRESH
+    </button>
 
 </div>
+
+
+<!-- =========================
+     MARS CARD
+========================= -->
+
+<div class="card mars-card">
+
+    <div class="card-title">
+
+        🔴 MARS ROVER
+
+    </div>
+
+
+    <div class="mars-image-container">
+
+        <img
+            class="mars-image"
+            id="marsImage"
+
+            src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/msl/2026/august-images/PIA26691-Curiosity%20Views%20Gale%20Craters%20Floor%20From%20Valle%20Grande-Figure%20A.png?crop=faces%2Cfocalpoint&fit=clip&h=2394&w=4976"
+
+            alt="NASA Curiosity Rover Mars Image"
+
+            onerror="marsError()"
+        >
+
+    </div>
+
+
+    <div
+        class="mars-info"
+        id="marsInfo">
+
+        🔴 NASA Curiosity Rover
+        • Mars surface image
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<div class="footer">
+
+    <strong>SPACE DATA DASHBOARD</strong>
+
+    <br><br>
+
+    ISS position data:
+    WhereTheISS.at
+
+    <br>
+
+    Asteroid data:
+    NASA Near Earth Object Web Service
+
+    <br>
+
+    Mars imagery:
+    NASA / JPL-Caltech / MSSS
+
+    <br><br>
+
+    This is an independent educational project,
+    not an official NASA website.
 
 </div>
 
@@ -268,9 +793,31 @@ NASA/JPL-Caltech/MSSS
 <script>
 
 
-/* =================================
-   REAL ISS POSITION
-================================= */
+/* =========================================
+   LIVE CLOCK
+========================================= */
+
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("clock")
+        .textContent =
+        now.toLocaleString();
+
+}
+
+updateClock();
+
+setInterval(
+    updateClock,
+    1000
+);
+
+
+/* =========================================
+   REAL ISS DATA
+========================================= */
 
 async function getISS() {
 
@@ -280,17 +827,30 @@ async function getISS() {
     const lng =
         document.getElementById("lng");
 
+    const altitude =
+        document.getElementById("altitude");
+
+    const speed =
+        document.getElementById("speed");
+
     const status =
         document.getElementById("issStatus");
 
-    const time =
-        document.getElementById("issTime");
+    const connection =
+        document.getElementById("issConnection");
 
     try {
 
-        const response = await fetch(
-            "https://api.wheretheiss.at/v1/satellites/25544"
-        );
+        connection.textContent =
+            "CONNECTING";
+
+        const response =
+            await fetch(
+                "https://api.wheretheiss.at/v1/satellites/25544",
+                {
+                    cache: "no-store"
+                }
+            );
 
         if (!response.ok) {
             throw new Error("ISS API error");
@@ -298,6 +858,7 @@ async function getISS() {
 
         const data =
             await response.json();
+
 
         const latitude =
             Number(data.latitude);
@@ -307,36 +868,65 @@ async function getISS() {
 
 
         const latDirection =
-            latitude >= 0 ? "N" : "S";
+            latitude >= 0
+                ? "N"
+                : "S";
+
 
         const lngDirection =
-            longitude >= 0 ? "E" : "W";
+            longitude >= 0
+                ? "E"
+                : "W";
 
 
         lat.textContent =
-            Math.abs(latitude).toFixed(4)
+            Math.abs(latitude)
+            .toFixed(4)
             + "° "
             + latDirection;
 
 
         lng.textContent =
-            Math.abs(longitude).toFixed(4)
+            Math.abs(longitude)
+            .toFixed(4)
             + "° "
             + lngDirection;
+
+
+        altitude.textContent =
+            Number(data.altitude)
+            .toFixed(1)
+            + " km";
+
+
+        speed.textContent =
+            Number(data.velocity)
+            .toFixed(0)
+            + " km/h";
 
 
         status.textContent =
             "🌍 ISS தற்போது பூமையைச் சுற்றி வருகிறது";
 
 
-        time.textContent =
-            new Date().toLocaleTimeString();
+        document.getElementById("issTime")
+            .textContent =
+            new Date()
+                .toLocaleTimeString();
+
+
+        connection.textContent =
+            "ONLINE";
 
     }
 
     catch(error) {
 
-        console.error(error);
+        console.error(
+            "ISS ERROR:",
+            error
+        );
+
 
         lat.textContent =
             "Offline";
@@ -344,8 +934,17 @@ async function getISS() {
         lng.textContent =
             "Offline";
 
+        altitude.textContent =
+            "--";
+
+        speed.textContent =
+            "--";
+
         status.textContent =
-            "⚠️ ISS தரவு கிடைக்கவில்லை";
+            "⚠️ ISS தரவு இணைப்பு இல்லை";
+
+        connection.textContent =
+            "OFFLINE";
 
     }
 
@@ -357,15 +956,19 @@ async function getISS() {
 getISS();
 
 
-/* Update every 5 seconds */
+/*
+   Update every 5 seconds
+*/
 
-setInterval(getISS, 5000);
+setInterval(
+    getISS,
+    5000
+);
 
 
-
-/* =================================
-   NASA ASTEROID DATA
-================================= */
+/* =========================================
+   NASA NEO ASTEROIDS
+========================================= */
 
 async function getAsteroids() {
 
@@ -379,29 +982,45 @@ async function getAsteroids() {
             "asteroidStatus"
         );
 
-
-    const today =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    const connection =
+        document.getElementById(
+            "neoConnection"
+        );
 
 
     try {
 
+        connection.textContent =
+            "CONNECTING";
+
+
+        const today =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
+
         const url =
             "https://api.nasa.gov/neo/rest/v1/feed"
-            + "?start_date=" + today
-            + "&end_date=" + today
+            + "?start_date="
+            + today
+            + "&end_date="
+            + today
             + "&api_key=DEMO_KEY";
 
 
         const response =
-            await fetch(url);
+            await fetch(
+                url,
+                {
+                    cache: "no-store"
+                }
+            );
 
 
         if (!response.ok) {
             throw new Error(
-                "NASA API error"
+                "NASA NEO API error"
             );
         }
 
@@ -411,8 +1030,9 @@ async function getAsteroids() {
 
 
         const objects =
-            data.near_earth_objects[today]
-            || [];
+            data.near_earth_objects[
+                today
+            ] || [];
 
 
         count.textContent =
@@ -420,61 +1040,171 @@ async function getAsteroids() {
 
 
         status.textContent =
-            "NASA NEO தரவு • " + today;
+            "NASA NEO தரவு • "
+            + today;
+
+
+        connection.textContent =
+            "ONLINE";
+
+
+        /*
+           Find closest asteroid
+        */
+
+        if (objects.length > 0) {
+
+            let closest =
+                objects[0];
+
+
+            let closestDistance =
+                Infinity;
+
+
+            objects.forEach(
+                asteroid => {
+
+                    const approach =
+                        asteroid
+                        .close_approach_data[0];
+
+
+                    if (!approach)
+                        return;
+
+
+                    const distance =
+                        Number(
+                            approach
+                            .miss_distance
+                            .kilometers
+                        );
+
+
+                    if (
+                        distance <
+                        closestDistance
+                    ) {
+
+                        closestDistance =
+                            distance;
+
+                        closest =
+                            asteroid;
+
+                    }
+
+                }
+            );
+
+
+            const approach =
+                closest
+                .close_approach_data[0];
+
+
+            document.getElementById(
+                "asteroidName"
+            ).textContent =
+                closest.name;
+
+
+            document.getElementById(
+                "asteroidDistance"
+            ).textContent =
+                Number(
+                    approach
+                    .miss_distance
+                    .kilometers
+                ).toLocaleString()
+                + " km";
+
+
+            const diameter =
+                closest
+                .estimated_diameter
+                .meters;
+
+
+            document.getElementById(
+                "asteroidSize"
+            ).textContent =
+                diameter
+                .estimated_diameter_min
+                .toFixed(1)
+                + " – "
+                + diameter
+                .estimated_diameter_max
+                .toFixed(1)
+                + " m";
+
+        }
 
     }
 
     catch(error) {
 
-        console.error(error);
+        console.error(
+            "NEO ERROR:",
+            error
+        );
+
 
         count.textContent =
             "N/A";
 
+
         status.textContent =
-            "⚠️ NASA தரவு தற்போது கிடைக்கவில்லை";
+            "⚠️ NASA NEO தரவு கிடைக்கவில்லை";
+
+
+        connection.textContent =
+            "OFFLINE";
 
     }
 
 }
 
 
-/* Start asteroid data */
+/* Start NEO */
 
 getAsteroids();
 
 
 
-/* =================================
+/* =========================================
    MARS IMAGE ERROR
-================================= */
+========================================= */
 
-function marsImageError() {
+function marsError() {
 
-    const container =
-        document.getElementById(
-            "marsImage"
-        );
+    document.getElementById(
+        "marsConnection"
+    ).textContent =
+        "IMAGE ERROR";
 
 
-    container.innerHTML = `
-
-        <div style="
-            padding:60px 20px;
-            color:#ff7777;
-        ">
-
-            ⚠️ NASA Mars image
-            தற்போது load ஆகவில்லை.
-
-        </div>
-
-    `;
+    document.getElementById(
+        "marsInfo"
+    ).textContent =
+        "⚠️ NASA Mars image load ஆகவில்லை";
 
 }
+
+
+/* =========================================
+   MARS STATUS
+========================================= */
+
+document.getElementById(
+    "marsConnection"
+).textContent =
+    "READY";
+
 
 </script>
 
 </body>
-</html>          
+    </html>
                     

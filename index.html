@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                    <!DOCTYPE html>
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
@@ -137,7 +137,7 @@
 <!-- Leaflet JS வரைபடத்திற்கான ஸ்கிரிப்ட் -->
 <script src="https://unpkg.com"></script>
 <script>
-    // வரைபடத்தை 0,0 புள்ளியில் துவக்குதல் (பிழைகள் சரிசெய்யப்பட்டது)
+    // வரைபடத்தை உலக வரைபட மையத்தில் துவக்குதல் (முழுமையான எண்கள் சேர்க்கப்பட்டுள்ளது)
     let map = L.map('map').setView([0, 0], 2);
     
     // டார்க் தீம் மேப் லேயர் இணைத்தல்
@@ -149,10 +149,10 @@
     let issIcon = L.icon({
         iconUrl: 'https://wikimedia.org',
         iconSize:,
-        iconAnchor: [20, 20]
+        iconAnchor: [25, 15]
     });
     
-    // ஆரம்பத்தில் 0,0 புள்ளியில் மார்க்கரை வைப்பது
+    // ஆரம்பத்தில் உலக வரைபட மையத்தில் மார்க்கரை வைப்பது
     let marker = L.marker([0, 0], {icon: issIcon}).addTo(map);
 
     // நேரடி ISS தரவை இணையத்தில் இருந்து பெரும் செயல்பாடு
@@ -190,5 +190,3 @@
 
 </body>
 </html>
-
-                 

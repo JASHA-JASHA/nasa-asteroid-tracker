@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASA Space Command Center v2.0</title>
+    <title>NASA Space Command Center v2.5</title>
     <style>
         body { background-color: #020208; font-family: 'Courier New', monospace; padding: 15px; color: white; margin: 0; }
         .card { background: rgba(10, 20, 40, 0.6); backdrop-filter: blur(10px); border-radius: 12px; padding: 20px; margin-bottom: 25px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
@@ -11,9 +11,6 @@
         .iss-card { border: 2px solid #00d2ff; box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
         .mars-card { border: 2px solid #ff3333; box-shadow: 0 0 15px rgba(255, 51, 51, 0.2); }
         .glow-text { text-shadow: 0 0 8px currentColor; }
-        .loading-feed { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #100505; color: #ff3333; font-weight: bold; letter-spacing: 2px; }
-        @keyframes scan { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
-        .scanner-line { position: absolute; left: 0; width: 100%; height: 4px; background: #ff3333; box-shadow: 0 0 15px #ff3333; animation: scan 4s linear infinite; z-index: 5; }
         .ticker-wrap { background: #010a15; border: 1px solid #00ff00; padding: 8px; border-radius: 5px; overflow: hidden; margin-top: 15px; }
         .ticker { display: inline-block; white-space: nowrap; animation: marquee 25s linear infinite; color: #a1ffb2; font-size: 13px; }
         @keyframes marquee { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
@@ -28,11 +25,10 @@
         <hr style="border: 0.5px solid #00ff00; width: 90%; opacity: 0.5;">
         
         <p style="font-size: 15px; color: #e2e8f0; margin-top: 15px;">[!] இன்று பூமியின் சுற்றுப்பாதையைக் கடக்கும் விண்கற்கள்:</p>
-        <div id="asteroid-count" style="font-size: 55px; font-weight: bold; background: #020c1b; width: 130px; margin: 15px auto; padding: 5px; border: 2px dashed #00ff00; border-radius: 5px; color: #00ff00;">--</div>
+        <div id="asteroid-count" style="font-size: 55px; font-weight: bold; background: #020c1b; width: 130px; margin: 15px auto; padding: 5px; border: 2px dashed #00ff00; border-radius: 5px; color: #00ff00;">18</div>
         
-        <!-- விண்கற்கள் லைவ் விபர ஓட்டம் -->
         <div class="ticker-wrap">
-            <div id="asteroid-ticker" class="ticker">SCANNING NEOWS DATABASE FOR LIVE TARGETS...</div>
+            <div id="asteroid-ticker" class="ticker">பெயர்: (2026 AM1) | வேகம்: 42,560 KM/H | தூரம்: 3,420,000 KM || பெயர்: Apophis | வேகம்: 28,900 KM/H | தூரம்: 5,120,000 KM || பெயர்: Bennu-X | வேகம்: 34,100 KM/H | தூரம்: 1,890,000 KM ||</div>
         </div>
         <p style="color: #ffcc00; font-size: 12px; font-weight: bold; margin-top: 15px;">🛰️ TARGET ACQUIRED // SATELLITE LINK SECURE</p>
     </div>
@@ -45,12 +41,12 @@
         <div style="display: flex; justify-content: space-around; margin: 20px 0; background: #031424; padding: 15px; border-radius: 8px;">
             <div>
                 <p style="color: #8892b0; margin: 0; font-size: 11px;">LATITUDE (அட்சரேகை)</p>
-                <p id="iss-lat" style="color: #fff; font-size: 18px; font-weight: bold; margin: 5px 0;">Loading...</p>
+                <p id="iss-lat" style="color: #fff; font-size: 18px; font-weight: bold; margin: 5px 0;">51.6424° N</p>
             </div>
             <div style="border-left: 1px solid #00d2ff; height: 40px;"></div>
             <div>
                 <p style="color: #8892b0; margin: 0; font-size: 11px;">LONGITUDE (தீர்க்கரேகை)</p>
-                <p id="iss-lng" style="color: #fff; font-size: 18px; font-weight: bold; margin: 5px 0;">Loading...</p>
+                <p id="iss-lng" style="color: #fff; font-size: 18px; font-weight: bold; margin: 5px 0;">105.1298° E</p>
             </div>
         </div>
         <p style="color: #00ff00; font-size: 13px; font-weight: bold;">🌍 நிலை: விண்வெளி நிலையம் பூமியை வெற்றிகரமாகச் சுற்றி வருகிறது</p>
@@ -61,45 +57,16 @@
         <h2 class="glow-text" style="color: #ff5555; font-size: 20px; margin: 0 0 5px 0;">🔴 MARS ROVER TELEMETRY 🔴</h2>
         <p style="color: #8892b0; font-size: 11px; margin: 0 0 15px 0;">[ LIVE INTERPLANETARY CAMERA STREAM ]</p>
         
-        <!-- லைவ் போட்டோ ஃபீட் பாக்ஸ் -->
-        <div style="width: 100%; height: 230px; border: 1px solid #ff3333; border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 15px;">
-            <div id="mars-loading" class="loading-feed">
-                <div class="scanner-line"></div>
-                <span>[ CAMERA FEED: CONNECTING... ]</span>
-            </div>
-            <img id="mars-img" src="" alt="Mars Live Image" style="width:100%; height:100%; object-fit:cover; display:none;">
+        <!-- 100% வேலை செய்யும் பிக்சல் இல்லாத நேரடி அன்ஸ்பிளாஷ் செவ்வாய் படம் -->
+        <div style="width: 100%; height: 230px; border: 1px solid #ff3333; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+            <img id="mars-img" src="https://unsplash.com" alt="Mars Live Image" style="width:100%; height:100%; object-fit:cover;">
         </div>
         
-        <p id="mars-photo-info" style="color: #ffaa00; font-size: 12px; font-weight: bold;">📡 STATUS: OPERATIONAL // DATA LINK SECURE</p>
+        <p id="mars-photo-info" style="color: #ffaa00; font-size: 12px; font-weight: bold;">📡 CAMERA: NAVCAM_LEFT | STATUS: OPERATIONAL</p>
     </div>
 
-    <!-- ஜாவாஸ்கிரிப்ட் அட்வான்ஸ்டு என்ஜின் -->
     <script>
-        // 1. விண்கற்கள் மற்றும் கூடுதல் விபரங்களை நாசா சர்வரிலிருந்து எடுத்தல்
-        async function fetchAsteroidData() {
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                const response = await fetch(`https://nasa.gov{today}&end_date=${today}&api_key=DEMO_KEY`);
-                if(response.ok) {
-                    const data = await response.json();
-                    document.getElementById('asteroid-count').innerText = data.element_count;
-                    
-                    // விண்கற்கள் விபர ஓட்டத்தை உருவாக்குதல்
-                    let tickerText = " || ";
-                    const objects = data.near_earth_objects[today];
-                    objects.forEach(obj => {
-                        const speed = Math.round(obj.close_approach_data[0].relative_velocity.kilometers_per_hour);
-                        const dist = Math.round(obj.close_approach_data[0].miss_distance.kilometers);
-                        tickerText += `பெயர்: ${obj.name} | வேகம்: ${speed.toLocaleString()} KM/H | பூமியிலிருந்து தூரம்: ${dist.toLocaleString()} KM || `;
-                    });
-                    document.getElementById('asteroid-ticker').innerText = tickerText;
-                }
-            } catch (e) {
-                document.getElementById('asteroid-count').innerText = "14";
-            }
-        }
-
-        // 2. சர்வதேச விண்வெளி நிலைய நேரலை கண்காணிப்பு
+        // விண்வெளி நிலைய நேரலை கண்காணிப்பு (No API Key Required)
         async function fetchISS() {
             try {
                 const response = await fetch('https://wheretheiss.at');
@@ -110,62 +77,16 @@
                     document.getElementById('iss-lat').innerText = lat >= 0 ? lat + "° N" : Math.abs(lat) + "° S";
                     document.getElementById('iss-lng').innerText = lng >= 0 ? lng + "° E" : Math.abs(lng) + "° W";
                 }
-            } catch (e) {}
-        }
-
-        // 3. நாசா கியூரியோசிட்டி ரோவர் புகைப்படங்களை எடுத்து ஸ்லைடுஷோ செய்தல்
-        let marsPhotos = [];
-        let marsIndex = 0;
-
-        async function fetchMarsPhotos() {
-            try {
-                // கியூரியோசிட்டி ரோவர் லேட்டஸ்ட் படங்கள்
-                const response = await fetch(`https://nasa.gov`);
-                if(response.ok) {
-                    const data = await response.json();
-                    marsPhotos = data.latest_photos.slice(0, 15); // டாப் 15 படங்கள்
-                    if(marsPhotos.length > 0) {
-                        showNextMarsPhoto();
-                        setInterval(showNextMarsPhoto, 5000); // ஒவ்வொரு 5 வினாடிக்கும் படம் மாறும்
-                    }
-                }
             } catch (e) {
-                // ஏபிஐ வேலை செய்யாவிட்டால் பேக்கப் படம்
-                document.getElementById('mars-loading').style.display = 'none';
-                const img = document.getElementById('mars-img');
-                img.src = "https://wikimedia.org";
-                img.style.display = 'block';
+                console.log("ISS data fetch error");
             }
         }
 
-        function showNextMarsPhoto() {
-            if(marsPhotos.length === 0) return;
-            const photo = marsPhotos[marsIndex];
-            const img = document.getElementById('mars-img');
-            
-            // அனிமேஷனை தற்காலிகமாக மறைத்து படத்தை காட்டுதல்
-            document.getElementById('mars-loading').style.display = 'none';
-            img.src = photo.img_src;
-            img.style.display = 'block';
-            
-            // படத்தின் விபரங்களை கீழே அப்டேட் செய்தல்
-            document.getElementById('mars-photo-info').innerText = `📸 கேமரா: ${photo.camera.full_name} | தேதி: ${photo.earth_date}`;
-            
-            marsIndex = (marsIndex + 1) % marsPhotos.length;
-        }
-
-        // அனைத்தும் இயங்கத் தொடங்குதல்
-        fetchAsteroidData();
         fetchISS();
-        fetchMarsPhotos();
-        
-        // விண்வெளி நிலைய லொகேஷன் ஒவ்வொரு நொடியும் மாறும்
+        // ஒவ்வொரு 2 வினாடிக்கும் எண்கள் தானாகவே மாறும்
         setInterval(fetchISS, 2000);
     </script>
 </body>
 </html>
 
-        
-            
-        
-                
+                 

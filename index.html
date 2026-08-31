@@ -1,534 +1,480 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>NASA Space Data Center</title>
+<title>NASA Space Data Center</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
-            margin: 0;
-            padding: 15px;
-            background: #020208;
-            font-family: monospace;
-            color: white;
-            text-align: center;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+body {
+    margin: 0;
+    padding: 15px;
+    background: #020208;
+    color: white;
+    font-family: monospace;
+    text-align: center;
+}
 
-        .card {
-            background: rgba(10,20,40,0.9);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+}
 
-        .nasa {
-            border: 2px solid #00ff00;
-            box-shadow: 0 0 12px rgba(0,255,0,0.25);
-        }
+.card {
+    background: rgba(8,18,38,0.95);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
-        .iss {
-            border: 2px solid #00d2ff;
-            box-shadow: 0 0 12px rgba(0,210,255,0.25);
-        }
+.nasa {
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0,255,0,.25);
+}
 
-        .mars {
-            border: 2px solid #ff3333;
-            box-shadow: 0 0 12px rgba(255,50,50,0.25);
-        }
+.iss {
+    border: 2px solid #00d2ff;
+    box-shadow: 0 0 15px rgba(0,210,255,.25);
+}
 
-        h1, h2 {
-            margin-top: 5px;
-        }
+.mars {
+    border: 2px solid #ff3333;
+    box-shadow: 0 0 15px rgba(255,50,50,.25);
+}
 
-        h2 {
-            letter-spacing: 1px;
-        }
+h2 {
+    letter-spacing: 1px;
+}
 
-        .number {
-            color: #00ff00;
-            font-size: 32px;
-            font-weight: bold;
-        }
+.number {
+    font-size: 38px;
+    font-weight: bold;
+    color: #00ff00;
+    margin: 15px;
+}
 
-        .telemetry {
-            display: flex;
-            justify-content: space-around;
-            gap: 15px;
-            margin-top: 15px;
-        }
+.telemetry {
+    display: flex;
+    gap: 15px;
+}
 
-        .data-box {
-            flex: 1;
-            background: rgba(0,20,40,0.8);
-            padding: 15px;
-            border-radius: 8px;
-        }
+.data-box {
+    flex: 1;
+    background: rgba(0,20,40,.8);
+    padding: 18px;
+    border-radius: 10px;
+}
 
-        .label {
-            color: #8aa0b5;
-            font-size: 14px;
-        }
+.label {
+    color: #9aa9bb;
+    font-size: 14px;
+}
 
-        .value {
-            color: #00d2ff;
-            font-size: 22px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
+.value {
+    color: #00d2ff;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 10px;
+}
 
-        #issStatus {
-            color: #00ff00;
-            margin-top: 15px;
-        }
+#issStatus {
+    color: #00ff00;
+    margin-top: 18px;
+}
 
-        #marsImage {
-            width: 100%;
-            min-height: 200px;
-            background: #050811;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+#marsImage {
+    width: 100%;
+    min-height: 220px;
+    background: #05070d;
+    border-radius: 10px;
+    overflow: hidden;
+}
 
-        #marsImage img {
-            width: 100%;
-            max-height: 500px;
-            object-fit: cover;
-            display: block;
-        }
+#marsImage img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
 
-        #marsCaption {
-            color: #ff7777;
-            margin-top: 10px;
-            font-size: 14px;
-        }
+#marsCaption {
+    color: #ff8888;
+    margin-top: 12px;
+}
 
-        .status {
-            font-size: 13px;
-            color: #aaa;
-            margin-top: 8px;
-        }
+.status {
+    color: #999;
+    font-size: 13px;
+    margin-top: 10px;
+}
 
-        .live-dot {
-            color: red;
-            animation: blink 1s infinite;
-        }
+.live {
+    color: red;
+    animation: blink 1s infinite;
+}
 
-        @keyframes blink {
-            50% {
-                opacity: 0.25;
-            }
-        }
+@keyframes blink {
+    50% {
+        opacity: .25;
+    }
+}
 
-        @media (max-width: 600px) {
+@media(max-width:600px) {
 
-            body {
-                padding: 10px;
-            }
+    body {
+        padding: 10px;
+    }
 
-            .card {
-                padding: 14px;
-            }
+    .card {
+        padding: 15px;
+    }
 
-            h2 {
-                font-size: 18px;
-            }
+    .telemetry {
+        flex-direction: column;
+    }
 
-            .telemetry {
-                flex-direction: column;
-            }
+    .value {
+        font-size: 20px;
+    }
 
-            .value {
-                font-size: 20px;
-            }
-        }
-    </style>
+    h2 {
+        font-size: 18px;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <!-- NASA / ASTEROID -->
-    <div class="card nasa">
 
-        <h2>NASA SPACE DATA CENTER</h2>
+<!-- NASA ASTEROIDS -->
 
-        <p>
-            இன்று பூமிக்கு அருகில் கடக்கும் விண்கற்கள்:
-        </p>
+<div class="card nasa">
 
-        <div class="number" id="asteroidCount">
-            Loading...
-        </div>
+<h2>NASA SPACE DATA CENTER</h2>
 
-        <div class="status" id="asteroidStatus">
-            NASA தரவு பெறப்படுகிறது...
-        </div>
+<p>
+இன்று பூமிக்கு அருகில் வரும் விண்கற்கள்
+</p>
 
-    </div>
+<div class="number" id="asteroidCount">
+Loading...
+</div>
 
+<div class="status" id="asteroidStatus">
+NASA தரவு பெறப்படுகிறது...
+</div>
 
-    <!-- ISS -->
-    <div class="card iss">
-
-        <h2>
-            <span class="live-dot">●</span>
-            LIVE ISS TELEMETRY
-        </h2>
-
-        <div class="telemetry">
-
-            <div class="data-box">
-
-                <div class="label">
-                    LATITUDE / அட்சரேகை
-                </div>
-
-                <div class="value" id="lat">
-                    Loading...
-                </div>
-
-            </div>
+</div>
 
 
-            <div class="data-box">
+<!-- ISS -->
 
-                <div class="label">
-                    LONGITUDE / தீர்க்கரேகை
-                </div>
+<div class="card iss">
 
-                <div class="value" id="lng">
-                    Loading...
-                </div>
+<h2>
+<span class="live">●</span>
+LIVE ISS TELEMETRY
+</h2>
 
-            </div>
+<div class="telemetry">
 
-        </div>
+<div class="data-box">
 
-        <div id="issStatus">
-            ISS உண்மையான நிலை பெறப்படுகிறது...
-        </div>
+<div class="label">
+LATITUDE / அட்சரேகை
+</div>
 
-        <div class="status">
-            கடைசி புதுப்பிப்பு:
-            <span id="issTime">--:--:--</span>
-        </div>
+<div class="value" id="lat">
+Loading...
+</div>
 
-    </div>
+</div>
 
 
-    <!-- MARS -->
-    <div class="card mars">
+<div class="data-box">
 
-        <h2>
-            🔴 MARS ROVER
-        </h2>
+<div class="label">
+LONGITUDE / தீர்க்கரேகை
+</div>
 
-        <div id="marsImage">
-            NASA Mars rover படம் பெறப்படுகிறது...
-        </div>
+<div class="value" id="lng">
+Loading...
+</div>
 
-        <div id="marsCaption">
-            NASA rover imagery
-        </div>
+</div>
 
-    </div>
+</div>
+
+<div id="issStatus">
+ISS நிலை பெறப்படுகிறது...
+</div>
+
+<div class="status">
+கடைசி புதுப்பிப்பு:
+<span id="issTime">--:--:--</span>
+</div>
+
+</div>
+
+
+<!-- MARS -->
+
+<div class="card mars">
+
+<h2>
+🔴 MARS ROVER
+</h2>
+
+<div id="marsImage">
+
+<img
+src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/msl/2026/august-images/PIA26691-Curiosity%20Views%20Gale%20Craters%20Floor%20From%20Valle%20Grande-Figure%20A.png?crop=faces%2Cfocalpoint&fit=clip&h=2394&w=4976"
+alt="NASA Curiosity Mars Rover Image"
+onerror="marsImageError()"
+>
+
+</div>
+
+<div id="marsCaption">
+
+NASA Curiosity Rover • Valle Grande • August 2026
+
+</div>
+
+<div class="status">
+
+NASA/JPL-Caltech/MSSS
+
+</div>
+
+</div>
+
 
 </div>
 
 
 <script>
 
-    // ==========================================
-    // NASA API KEY
-    // ==========================================
 
-    const NASA_API_KEY = "DEMO_KEY";
+/* =================================
+   REAL ISS POSITION
+================================= */
 
+async function getISS() {
 
-    // ==========================================
-    // REAL ISS POSITION
-    // ==========================================
+    const lat =
+        document.getElementById("lat");
 
-    async function getISS() {
+    const lng =
+        document.getElementById("lng");
 
-        const latElement = document.getElementById("lat");
-        const lngElement = document.getElementById("lng");
-        const statusElement = document.getElementById("issStatus");
-        const timeElement = document.getElementById("issTime");
+    const status =
+        document.getElementById("issStatus");
 
-        try {
+    const time =
+        document.getElementById("issTime");
 
-            const response = await fetch(
-                "https://api.wheretheiss.at/v1/satellites/25544"
-            );
+    try {
 
-            if (!response.ok) {
-                throw new Error("ISS API error");
-            }
+        const response = await fetch(
+            "https://api.wheretheiss.at/v1/satellites/25544"
+        );
 
-            const data = await response.json();
-
-            const latitude = Number(data.latitude);
-            const longitude = Number(data.longitude);
-
-
-            // Latitude direction
-            let latDirection =
-                latitude >= 0 ? "N" : "S";
-
-            // Longitude direction
-            let lngDirection =
-                longitude >= 0 ? "E" : "W";
-
-
-            latElement.textContent =
-                Math.abs(latitude).toFixed(4) +
-                "° " +
-                latDirection;
-
-
-            lngElement.textContent =
-                Math.abs(longitude).toFixed(4) +
-                "° " +
-                lngDirection;
-
-
-            statusElement.textContent =
-                "🌍 ISS தற்போது பூமியைச் சுற்றி வருகிறது";
-
-
-            const now = new Date();
-
-            timeElement.textContent =
-                now.toLocaleTimeString();
-
+        if (!response.ok) {
+            throw new Error("ISS API error");
         }
 
-        catch (error) {
+        const data =
+            await response.json();
 
-            console.error("ISS ERROR:", error);
+        const latitude =
+            Number(data.latitude);
 
-            latElement.textContent =
-                "Offline";
+        const longitude =
+            Number(data.longitude);
 
-            lngElement.textContent =
-                "Offline";
 
-            statusElement.textContent =
-                "⚠️ ISS தரவைப் பெற முடியவில்லை";
+        const latDirection =
+            latitude >= 0 ? "N" : "S";
 
-        }
+        const lngDirection =
+            longitude >= 0 ? "E" : "W";
+
+
+        lat.textContent =
+            Math.abs(latitude).toFixed(4)
+            + "° "
+            + latDirection;
+
+
+        lng.textContent =
+            Math.abs(longitude).toFixed(4)
+            + "° "
+            + lngDirection;
+
+
+        status.textContent =
+            "🌍 ISS தற்போது பூமையைச் சுற்றி வருகிறது";
+
+
+        time.textContent =
+            new Date().toLocaleTimeString();
+
     }
 
+    catch(error) {
 
-    // Start ISS
-    getISS();
+        console.error(error);
 
-    // Update every 5 seconds
-    setInterval(getISS, 5000);
+        lat.textContent =
+            "Offline";
 
+        lng.textContent =
+            "Offline";
 
+        status.textContent =
+            "⚠️ ISS தரவு கிடைக்கவில்லை";
 
-    // ==========================================
-    // REAL NASA ASTEROID DATA
-    // ==========================================
-
-    async function getAsteroids() {
-
-        const countElement =
-            document.getElementById("asteroidCount");
-
-        const statusElement =
-            document.getElementById("asteroidStatus");
-
-        try {
-
-            const today =
-                new Date().toISOString().split("T")[0];
-
-
-            const url =
-                "https://api.nasa.gov/neo/rest/v1/feed" +
-                "?start_date=" + today +
-                "&end_date=" + today +
-                "&api_key=" + NASA_API_KEY;
-
-
-            const response =
-                await fetch(url);
-
-
-            if (!response.ok) {
-                throw new Error("NASA NEO API error");
-            }
-
-
-            const data =
-                await response.json();
-
-
-            const objects =
-                data.near_earth_objects[today] || [];
-
-
-            countElement.textContent =
-                objects.length;
-
-
-            statusElement.textContent =
-                "NASA NEO தரவிலிருந்து பெறப்பட்டது • " +
-                today;
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "ASTEROID ERROR:",
-                error
-            );
-
-            countElement.textContent =
-                "N/A";
-
-            statusElement.textContent =
-                "⚠️ NASA asteroid data கிடைக்கவில்லை";
-
-        }
     }
 
-
-    // Start asteroid data
-    getAsteroids();
+}
 
 
+/* Start ISS */
 
-    // ==========================================
-    // NASA MARS ROVER IMAGE
-    // ==========================================
-
-    async function getMarsImage() {
-
-        const imageContainer =
-            document.getElementById("marsImage");
-
-        const caption =
-            document.getElementById("marsCaption");
+getISS();
 
 
-        try {
+/* Update every 5 seconds */
 
-            /*
-             * Perseverance rover
-             * Latest available photos for a recent sol.
-             */
-
-            const url =
-                "https://api.nasa.gov/mars-photos/api/v1/rovers/perseverance/photos" +
-                "?sol=1000" +
-                "&api_key=" + NASA_API_KEY;
+setInterval(getISS, 5000);
 
 
-            const response =
-                await fetch(url);
+
+/* =================================
+   NASA ASTEROID DATA
+================================= */
+
+async function getAsteroids() {
+
+    const count =
+        document.getElementById(
+            "asteroidCount"
+        );
+
+    const status =
+        document.getElementById(
+            "asteroidStatus"
+        );
 
 
-            if (!response.ok) {
-                throw new Error("Mars API error");
-            }
+    const today =
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
 
-            const data =
-                await response.json();
+    try {
+
+        const url =
+            "https://api.nasa.gov/neo/rest/v1/feed"
+            + "?start_date=" + today
+            + "&end_date=" + today
+            + "&api_key=DEMO_KEY";
 
 
-            if (
-                !data.photos ||
-                data.photos.length === 0
-            ) {
-
-                throw new Error(
-                    "No Mars photos available"
-                );
-            }
+        const response =
+            await fetch(url);
 
 
-            /*
-             * Select one NASA rover image.
-             */
-
-            const photo =
-                data.photos[
-                    Math.floor(
-                        Math.random() *
-                        data.photos.length
-                    )
-                ];
-
-
-            imageContainer.innerHTML = `
-                <img
-                    src="${photo.img_src}"
-                    alt="NASA Mars Rover Image"
-                >
-            `;
-
-
-            caption.textContent =
-                "🔴 Perseverance Rover • " +
-                photo.camera.full_name +
-                " • Sol " +
-                photo.sol;
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "MARS ERROR:",
-                error
+        if (!response.ok) {
+            throw new Error(
+                "NASA API error"
             );
-
-
-            imageContainer.innerHTML = `
-                <div style="
-                    padding:40px;
-                    color:#ff7777;
-                ">
-                    ⚠️ NASA Mars image
-                    தற்போது கிடைக்கவில்லை
-                </div>
-            `;
-
-
-            caption.textContent =
-                "NASA Mars data connection error";
-
         }
+
+
+        const data =
+            await response.json();
+
+
+        const objects =
+            data.near_earth_objects[today]
+            || [];
+
+
+        count.textContent =
+            objects.length;
+
+
+        status.textContent =
+            "NASA NEO தரவு • " + today;
+
     }
 
+    catch(error) {
 
-    // Start Mars image
-    getMarsImage();
+        console.error(error);
+
+        count.textContent =
+            "N/A";
+
+        status.textContent =
+            "⚠️ NASA தரவு தற்போது கிடைக்கவில்லை";
+
+    }
+
+}
+
+
+/* Start asteroid data */
+
+getAsteroids();
+
+
+
+/* =================================
+   MARS IMAGE ERROR
+================================= */
+
+function marsImageError() {
+
+    const container =
+        document.getElementById(
+            "marsImage"
+        );
+
+
+    container.innerHTML = `
+
+        <div style="
+            padding:60px 20px;
+            color:#ff7777;
+        ">
+
+            ⚠️ NASA Mars image
+            தற்போது load ஆகவில்லை.
+
+        </div>
+
+    `;
+
+}
 
 </script>
 
 </body>
-</html>
-
+</html>          
+                    
